@@ -6,8 +6,11 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
+/**
+ * The type Api error.
+ */
 @Data
-class ApiError {
+public class ApiError {
 
     private HttpStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
@@ -19,11 +22,22 @@ class ApiError {
         timestamp = LocalDateTime.now();
     }
 
+    /**
+     * Instantiates a new Api error.
+     *
+     * @param status the status
+     */
     ApiError(HttpStatus status) {
         this();
         this.status = status;
     }
 
+    /**
+     * Instantiates a new Api error.
+     *
+     * @param status the status
+     * @param ex     the ex
+     */
     ApiError(HttpStatus status, Throwable ex) {
         this();
         this.status = status;
@@ -31,6 +45,13 @@ class ApiError {
         this.debugMessage = ex.getLocalizedMessage();
     }
 
+    /**
+     * Instantiates a new Api error.
+     *
+     * @param status  the status
+     * @param message the message
+     * @param ex      the ex
+     */
     ApiError(HttpStatus status, String message, Throwable ex) {
         this();
         this.status = status;

@@ -9,10 +9,19 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * The type Rest exception handler.
+ */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /**
+     * Handle file not found response entity.
+     *
+     * @param ex the ex
+     * @return the response entity
+     */
     @ExceptionHandler(NoSuchFile.class)
     protected ResponseEntity<Object> handleFileNotFound(
             NoSuchFile ex) {
@@ -21,6 +30,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(apiError);
     }
 
+    /**
+     * Handle tags not found response entity.
+     *
+     * @param ex the ex
+     * @return the response entity
+     */
     @ExceptionHandler(NoSuchTags.class)
     protected ResponseEntity<Object> handleTagsNotFound(
             NoSuchTags ex) {

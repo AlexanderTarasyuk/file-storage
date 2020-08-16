@@ -81,15 +81,17 @@ public class FileService {
      */
     public int createFile(FileModel fileModel) {
         String fileName = fileModel.getName();
-        if (fileName.endsWith(".video")) {
-            fileModel.getTags().add("video");
-        }
-        if (fileName.endsWith(".document")) {
-            fileModel.getTags().add("document");
-        }
-        if (fileName.endsWith(".image")) {
-            fileModel.getTags().add("image");
-        }
+
+        fileModel.getTags().add(TagsAddeUtils.getExtensionTag(fileModel.getName()));
+//        if (fileName.endsWith(".video")) {
+//            fileModel.getTags().add("video");
+//        }
+//        if (fileName.endsWith(".document")) {
+//            fileModel.getTags().add("document");
+//        }
+//        if (fileName.endsWith(".image")) {
+//            fileModel.getTags().add("image");
+//        }
         return fileRepository.save(fileModel).getId();
     }
 
@@ -160,7 +162,7 @@ public class FileService {
     public Page<FileModel> getAllFilesByCriteria(Optional<String> q, Pageable pageable) {
         Stream<FileModel> fileModelStream = (Stream<FileModel>) fileRepository.findAll();
         List<FileModel> fileList = fileModelStream.
-                filter(fileModel -> fileModel.getName().toLowerCase().contains(q.get().toLowerCase()))
+                filter(fileModel -> !fileModel.getName().toLowerCase().contains(q.get().toLowerCase()))
                 .collect(Collectors.toList());
         return new PageImpl<>(fileList);
     }

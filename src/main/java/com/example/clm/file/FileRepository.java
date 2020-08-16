@@ -26,6 +26,6 @@ interface FileRepository extends ElasticsearchRepository<FileModel, Integer> {
     Page<FileModel> findByFilteredTagQuery(List<String> tags, Pageable pageable);
 
 
-    Page<FileModel> getFilesByTagListIn(List<String> tagList, Pageable pageable);
+//    Page<FileModel> getFilesByTagListIn(List<String> tagList, Pageable pageable);
 
 }

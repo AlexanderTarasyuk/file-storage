@@ -9,15 +9,15 @@ class TagsAddeUtilsTest {
     @Test
     void getExtensionTag() {
         String expectedDocument = "document";
-        String actual1 = TagsAddeUtils.getExtensionTag("my.doc");
-        assertEquals("Strings should be equal", expectedDocument, actual1);
+        String actualDocument = TagsAddeUtils.getExtensionTag("my.doc");
+        assertEquals("Strings should be equal", expectedDocument, actualDocument);
 
         String expectedImage = "image";
-        String actual2 = TagsAddeUtils.getExtensionTag("my.png");
-        assertEquals("Strings should be equal", expectedImage, actual2);
+        String actualImage = TagsAddeUtils.getExtensionTag("my.png");
+        assertEquals("Strings should be equal", expectedImage, actualImage);
 
         String expectedAudio = "audio";
-        String actual3 = TagsAddeUtils.getExtensionTag("my.mp3");
-        assertEquals("Strings should be equal", expectedAudio, actual3);
+        String actualAudio = TagsAddeUtils.getExtensionTag("my.mp3");
+        assertEquals("Strings should be equal", expectedAudio, actualAudio);
     }
 }

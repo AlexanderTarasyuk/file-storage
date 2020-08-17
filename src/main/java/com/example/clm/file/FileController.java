@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,7 +58,7 @@ public class FileController {
                                             @RequestParam(required = false) Optional<Integer> size,
                                             Pageable pageable) {
 
-        log.info("GET all files by tags " + tags.get().toString());
+        log.info("GET all files by tags " + tags.orElse(Collections.emptyList()).toString());
         return fileService.findAllByTags(tags, page, size, pageable);
     }
 

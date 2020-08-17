@@ -82,16 +82,10 @@ public class FileService {
     public int createFile(FileModel fileModel) {
         String fileName = fileModel.getName();
 
-        fileModel.getTags().add(TagsAddeUtils.getExtensionTag(fileModel.getName()));
-//        if (fileName.endsWith(".video")) {
-//            fileModel.getTags().add("video");
-//        }
-//        if (fileName.endsWith(".document")) {
-//            fileModel.getTags().add("document");
-//        }
-//        if (fileName.endsWith(".image")) {
-//            fileModel.getTags().add("image");
-//        }
+        if (fileModel.getTags() != null) {
+            fileModel.getTags().add(TagsAddeUtils.getExtensionTag(fileModel.getName()));
+        }
+
         return fileRepository.save(fileModel).getId();
     }
 

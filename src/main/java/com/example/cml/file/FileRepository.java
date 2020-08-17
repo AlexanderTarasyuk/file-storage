@@ -1,5 +1,6 @@
 package com.example.cml.file;
 
+import com.example.cml.file.models.FileModel;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;

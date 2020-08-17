@@ -1,5 +1,8 @@
 package com.example.cml.file;
 
+import com.example.cml.file.models.CustomPageResult;
+import com.example.cml.file.models.FileModel;
+import com.example.cml.file.models.Tags;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -46,9 +49,9 @@ public class FileController {
      * @return the all files by tag
      */
     @GetMapping("/file")
-    public Page<FileModel> getAllFilesByTag(@RequestParam(required = false) Optional<List<String>> tags,
-                                            @RequestParam(required = false) Optional<Integer> page,
-                                            @RequestParam(required = false) Optional<Integer> size) {
+    public CustomPageResult getAllFilesByTag(@RequestParam(required = false) Optional<List<String>> tags,
+                                             @RequestParam(required = false) Optional<Integer> page,
+                                             @RequestParam(required = false) Optional<Integer> size) {
         log.info("GET all files by tags {} ", tags.orElse(Collections.emptyList()).toString());
         return fileService.findAllByTags(tags, page, size);
     }
@@ -96,11 +99,11 @@ public class FileController {
      * @param tags the tags
      * @return the response entity
      */
-    @PatchMapping("/file/{id}/tags")
+    @PatchMapping("/file/{id}")
     public ResponseEntity<?> updateFile(@PathVariable(value = "id") Integer id,
-                                        @RequestBody ArrayList<String> tags) {
-        fileService.updateFile(id, tags);
-        log.info("File with id {} is updated with tags {}", id, tags.toString());
+                                        @RequestBody Tags tags) {
+        fileService.updateFile(id, tags.getTags());
+        log.info("File with id {} is updated with tags {}", id, String.join(",", tags.getTags()));
         return ResponseEntity.ok().build();
     }
 

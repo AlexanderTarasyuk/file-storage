@@ -1,12 +1,10 @@
-package com.example.cml.file;
+package com.example.cml.file.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotNull;
@@ -28,16 +26,12 @@ public class FileModel {
     private static AtomicInteger counter = new AtomicInteger(0);
 
     @Id
-    @Field(type = FieldType.Integer)
     private int id;
-    @Field(type = FieldType.Text, fielddata = true)
     @NotNull
     private String name;
-    @Field(type = FieldType.Long, fielddata = true)
     @Positive
     @NotNull
     private long size;
-    @Field(type = FieldType.Keyword)
     private List<String> tags;
 
     /**

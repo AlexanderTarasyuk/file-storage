@@ -2,6 +2,8 @@ package com.example.cml.file;
 
 import com.example.cml.file.exceptions.NoSuchFile;
 import com.example.cml.file.exceptions.NoSuchTags;
+import com.example.cml.file.models.CustomPageResult;
+import com.example.cml.file.models.FileModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -39,7 +41,7 @@ public class FileService {
      * @param size the size
      * @return the page
      */
-    public Page<FileModel> findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size) {
+    public CustomPageResult findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size) {
 
         Pageable paramPageable = PageRequest.of(page.orElse(0), size.orElse(10));
         Page<FileModel> fileModelPage;
@@ -49,7 +51,7 @@ public class FileService {
         } else {
             fileModelPage = fileRepository.findByFilteredTagQuery(tags.orElse(Collections.emptyList()), paramPageable);
         }
-        return fileModelPage;
+        return new CustomPageResult(fileModelPage.getTotalElements(), fileModelPage.getTotalPages(), fileModelPage.getContent());
     }
 
     /**

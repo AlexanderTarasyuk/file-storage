@@ -1,6 +1,7 @@
 package com.example.cml.file;
 
 import com.example.cml.TestRunner;
+import com.example.cml.file.models.FileModel;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;

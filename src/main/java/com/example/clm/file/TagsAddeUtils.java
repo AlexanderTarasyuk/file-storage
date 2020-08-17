@@ -29,7 +29,7 @@ public class TagsAddeUtils {
      * @param fileName the file name
      * @return the extension tag
      */
-    public static String getExtensionTag(String fileName) {
+    protected static String getExtensionTag(String fileName) {
         for (Map.Entry<String, String> entry : fileExtMap.entrySet()) {
             if (fileName.endsWith(entry.getKey())) {
                 return entry.getValue();

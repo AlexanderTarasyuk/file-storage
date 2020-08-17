@@ -1,6 +1,7 @@
 package com.example.clm.file;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import static org.springframework.http.HttpStatus.OK;
  */
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class FileController {
 
     private final FileService fileService;
@@ -31,6 +33,7 @@ public class FileController {
      */
     @GetMapping("/file/{id}")
     public FileModel getFileById(@PathVariable(value = "id") Integer id) {
+        log.info("GET file by ID " + id);
         return fileService.getFileById(id);
     }
 
@@ -53,6 +56,8 @@ public class FileController {
                                             @RequestParam(required = false) Optional<Integer> page,
                                             @RequestParam(required = false) Optional<Integer> size,
                                             Pageable pageable) {
+
+        log.info("GET all files by tags " + tags.get().toString());
         return fileService.findAllByTags(tags, page, size, pageable);
     }
 
@@ -67,6 +72,8 @@ public class FileController {
     public Page<FileModel> getAllFilesByCriteria(
             @RequestParam(required = false) Optional<String> q,
             Pageable pageable) {
+        log.info("GET all files by criteria " + q.orElse("No criteria"));
+
         if (q.isPresent()) {
             return fileService.getAllFilesByCriteria(q, pageable);
         } else {
@@ -84,6 +91,8 @@ public class FileController {
     @PostMapping("/file")
     public ResponseEntity<?> createFile(@Valid @RequestBody FileModel fileModel) {
         int id = fileService.createFile(fileModel);
+        log.info("File is created with id " + fileModel.getId());
+
         return ResponseEntity.ok().body(id);
     }
 
@@ -98,6 +107,7 @@ public class FileController {
     public ResponseEntity<?> updateFile(@PathVariable(value = "id") Integer id,
                                         @RequestBody ArrayList<String> tags) {
         fileService.updateFile(id, tags);
+        log.info("File with id " + id + " is updated with tags " + tags.toString());
         return ResponseEntity.ok().build();
     }
 
@@ -109,6 +119,9 @@ public class FileController {
     @DeleteMapping("/file/{id}")
     @ResponseStatus(OK)
     public void deleteFile(@PathVariable(value = "id") int id) {
+
+        log.info("File with id is deleted " + id);
+
         fileService.deleteFile(id);
     }
 
@@ -123,6 +136,9 @@ public class FileController {
     @ResponseBody
     public void deleteFileTags(@PathVariable(value = "id") Integer id,
                                @RequestBody ArrayList<String> tags) {
+        log.info("File with id" + id + " tags are deleted");
+
+
         fileService.deleteFileTags(id, tags);
     }
 

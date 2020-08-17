@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.util.List;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
@@ -26,20 +28,29 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @RunWith(SpringRunner.class)
 @TestRunner
 @DirtiesContext
 class FileControllerTest {
+    private FileModel mockFileModel;
 
     @Autowired
     MockMvc mockMvc;
 
     @Autowired
     FileRepository repository;
+    @Autowired
+    FileService fileService;
 
     @Before
     public void setUp() throws Exception {
         repository.deleteAll();
+        mockFileModel = new FileModel();
+        mockFileModel.setId(1);
+        mockFileModel.setSize(1234);
+        mockFileModel.setName("mockfile");
+        mockFileModel.setTags(List.of("tag3"));
     }
 
     @After
@@ -49,7 +60,7 @@ class FileControllerTest {
 
     @Test
     void getFileById() throws Exception {
-        FileModel fileModel = new FileModel(1, "myfile", 123 );
+        FileModel fileModel = new FileModel(1, "myfile", 123);
         Integer id = repository.save(fileModel).getId();
         mockMvc.perform(get("/file/id")
                 .contentType("application/json")
@@ -59,8 +70,8 @@ class FileControllerTest {
     @Test
     void getAllFilesByTag() throws Exception {
         repository.deleteAll();
-        FileModel fileModel1 = new FileModel(1, "myfile", 123 );
-        FileModel fileModel2 = new FileModel(2, "myfileNew", 321 );
+        FileModel fileModel1 = new FileModel(1, "myfile", 123);
+        FileModel fileModel2 = new FileModel(2, "myfileNew", 321);
         repository.save(fileModel1);
         repository.save(fileModel2);
         mockMvc.perform(get("/file"))
@@ -77,7 +88,7 @@ class FileControllerTest {
 
     @Test
     void createFile() throws Exception {
-        FileModel fileModel = new FileModel(1, "myfile", 123 );
+        FileModel fileModel = new FileModel(1, "myfile", 123);
         mockMvc.perform(post("/file")
                 .contentType("application/json")
                 .content(fromResource("json/create-file.json")))
@@ -100,8 +111,25 @@ class FileControllerTest {
     }
 
     @Test
-    void deleteFileTags() {
+    void deleteFileTags() throws Exception {
+        mockFileModel = new FileModel();
+        mockFileModel.setId(1);
+        mockFileModel.setSize(1234);
+        mockFileModel.setName("mockfile");
+        mockFileModel.setTags(List.of("tag3"));
+        repository.save(mockFileModel);
+        Mockito.when(fileService.deleteFileTags(Mockito.any(), Mockito.anyList()))
+                .thenReturn(mockFileModel);
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .patch("/file/1/tags")
+                .accept(MediaType.APPLICATION_JSON)
+                .content("[\"tag1\", \"tag2\", \"tag3\"]")
+                .contentType(MediaType.APPLICATION_JSON);
+        MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+        MockHttpServletResponse response = mvcResult.getResponse();
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
+
 
     public String fromResource(String path) {
         try {

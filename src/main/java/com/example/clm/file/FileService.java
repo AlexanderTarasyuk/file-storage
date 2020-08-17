@@ -1,5 +1,6 @@
 package com.example.clm.file;
 
+import com.example.clm.file.exceptions.NoSuchFile;
 import com.example.clm.file.exceptions.NoSuchTags;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -98,7 +99,7 @@ public class FileService {
     @Transactional
     public void updateFile(Integer id, @Valid ArrayList<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
-        FileModel fileModel = possibleFileModel.orElseThrow(NoSuchFieldError::new);
+        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(tags));
         fileModel.setTags(tags);
         fileRepository.save(fileModel);
     }
@@ -109,15 +110,16 @@ public class FileService {
      * @param id   the id
      * @param tags the tags
      */
-    public void deleteFileTags(Integer id, ArrayList<String> tags) {
+    public FileModel deleteFileTags(Integer id, List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
-        FileModel fileModel = possibleFileModel.orElseThrow(NoSuchFieldError::new);
+        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(tags));
         if (!fileModel.getTags().equals(tags)) {
             throw new NoSuchTags(tags);
         } else {
             fileModel.setTags(Collections.EMPTY_LIST);
         }
         fileRepository.save(fileModel);
+        return fileModel;
     }
 
     /**

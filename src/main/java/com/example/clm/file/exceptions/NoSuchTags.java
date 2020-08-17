@@ -1,6 +1,6 @@
 package com.example.clm.file.exceptions;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The type No such tags.
@@ -12,7 +12,11 @@ public class NoSuchTags extends RuntimeException {
      *
      * @param tags the tags
      */
-    public NoSuchTags(ArrayList<String> tags) {
+    public NoSuchTags(List<String> tags) {
         super("No match tags" + tags.toString());
+    }
+
+    public NoSuchTags() {
+
     }
 }

@@ -52,7 +52,7 @@ public class FileController {
     public CustomPageResult getAllFilesByTag(@RequestParam(required = false) Optional<List<String>> tags,
                                              @RequestParam(required = false) Optional<Integer> page,
                                              @RequestParam(required = false) Optional<Integer> size) {
-        log.info("GET all files by tags {} ", tags.orElse(Collections.emptyList()).toString());
+        log.info("GET all files by tags {} ", tags.map(strings -> String.join(",", strings)).orElseGet(() -> Collections.emptyList().toString()));
         return fileService.findAllByTags(tags, page, size);
     }
 

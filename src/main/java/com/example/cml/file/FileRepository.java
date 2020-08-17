@@ -1,4 +1,4 @@
-package com.example.clm.file;
+package com.example.cml.file;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,13 +9,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * The interface File repository.
+ * The  File repository.
  */
 @Repository
 interface FileRepository extends ElasticsearchRepository<FileModel, Integer> {
 
     /**
-     * Find by filtered tag query page.
+     * Finds files by filtered tag query page.
      *
      * @param tags     the tags
      * @param pageable the pageable
@@ -24,8 +24,4 @@ interface FileRepository extends ElasticsearchRepository<FileModel, Integer> {
     @Query("{\"bool\": {\"must\": " +
             "{\"match_all\": {}}, \"filter\": {\"term\": {\"tags\": \"?0\" }}}}")
     Page<FileModel> findByFilteredTagQuery(List<String> tags, Pageable pageable);
-
-
-//    Page<FileModel> getFilesByTagListIn(List<String> tagList, Pageable pageable);
-
 }

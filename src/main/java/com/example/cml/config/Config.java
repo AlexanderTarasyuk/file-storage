@@ -1,6 +1,7 @@
-package com.example.clm.config;
+package com.example.cml.config;
 
 import org.elasticsearch.client.RestHighLevelClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,16 +10,18 @@ import org.springframework.data.elasticsearch.client.RestClients;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.ElasticsearchRestTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
-//TODO to pu value of localhost to properties
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "com.example.clm.file")
-@ComponentScan(basePackages = {"com.example.clm.file"})
+@EnableElasticsearchRepositories(basePackages = "com.example.cml.file")
+@ComponentScan(basePackages = {"com.example.cml.file"})
 public class Config {
+
+    @Value("${elasticsearchport}")
+    private String elasticsearchport;
 
     @Bean
     RestHighLevelClient client() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo("localhost:9200")
+                .connectedTo(elasticsearchport)
                 .build();
 
         return RestClients.create(clientConfiguration)

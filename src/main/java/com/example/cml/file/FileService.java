@@ -1,7 +1,7 @@
-package com.example.clm.file;
+package com.example.cml.file;
 
-import com.example.clm.file.exceptions.NoSuchFile;
-import com.example.clm.file.exceptions.NoSuchTags;
+import com.example.cml.file.exceptions.NoSuchFile;
+import com.example.cml.file.exceptions.NoSuchTags;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The type File service.
+ * File service.
  */
 @Service
 @AllArgsConstructor
@@ -32,30 +32,28 @@ public class FileService {
     private final ElasticsearchOperations elasticsearchOperations;
 
     /**
-     * Find all by tags page.
+     * Finds all files by tags page.
      *
-     * @param tags     the tags
-     * @param page     the page
-     * @param size     the size
-     * @param pageable the pageable
+     * @param tags the tags
+     * @param page the page
+     * @param size the size
      * @return the page
      */
-    public Page<FileModel> findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size, Pageable pageable) {
+    public Page<FileModel> findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size) {
 
-        Pageable paramPageable = PageRequest.of(page.orElse(0), size.orElse(2));
+        Pageable paramPageable = PageRequest.of(page.orElse(0), size.orElse(10));
         Page<FileModel> fileModelPage;
         if (tags.isEmpty()) {
             fileModelPage = fileRepository.findAll(paramPageable);
 
         } else {
-
             fileModelPage = fileRepository.findByFilteredTagQuery(tags.orElse(Collections.emptyList()), paramPageable);
         }
         return fileModelPage;
     }
 
     /**
-     * Delete file.
+     * Deletes file by id.
      *
      * @param id the id
      */
@@ -63,19 +61,9 @@ public class FileService {
         fileRepository.deleteById(id);
     }
 
-    /**
-     * Find by tag using declared query page.
-     *
-     * @param tag  the tag
-     * @param page the page
-     * @return the page
-     */
-    public Page<FileModel> findByTagUsingDeclaredQuery(List<String> tag, PageRequest page) {
-        return fileRepository.findByFilteredTagQuery(tag, page);
-    }
 
     /**
-     * Create file int.
+     * Creates file int.
      *
      * @param fileModel the file model
      * @return the int
@@ -84,28 +72,37 @@ public class FileService {
         String fileName = fileModel.getName();
 
         if (fileModel.getTags() != null) {
-            fileModel.getTags().add(TagsAddeUtils.getExtensionTag(fileModel.getName()));
+            fileModel.getTags().add(TagsAddUtil.getExtensionTag(fileModel.getName()));
+        } else {
+            fileModel.setTags(List.of(Objects.requireNonNull(TagsAddUtil.getExtensionTag(fileModel.getName()))));
         }
 
         return fileRepository.save(fileModel).getId();
     }
 
     /**
-     * Update file.
+     * Updates file.
      *
      * @param id   the id
      * @param tags the tags
      */
     @Transactional
-    public void updateFile(Integer id, @Valid ArrayList<String> tags) {
+    public void updateFile(Integer id, @Valid List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
         FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(tags));
-        fileModel.setTags(tags);
+        List<String> temp = fileModel.getTags();
+        if (fileModel.getTags() != null) {
+            List<String> newList = Stream.concat(temp.stream(), tags.stream())
+                    .collect(Collectors.toList());
+            fileModel.setTags(newList);
+        } else {
+            fileModel.setTags(tags);
+        }
         fileRepository.save(fileModel);
     }
 
     /**
-     * Delete file tags.
+     * Deletess file tags.
      *
      * @param id   the id
      * @param tags the tags
@@ -161,16 +158,6 @@ public class FileService {
                 filter(fileModel -> !fileModel.getName().toLowerCase().contains(q.get().toLowerCase()))
                 .collect(Collectors.toList());
         return new PageImpl<>(fileList);
-    }
-
-    /**
-     * Find all page.
-     *
-     * @param page the page
-     * @return the page
-     */
-    public Page<FileModel> findAll(Pageable page) {
-        return fileRepository.findAll(page);
     }
 
     /**

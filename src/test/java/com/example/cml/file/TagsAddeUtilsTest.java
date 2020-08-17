@@ -1,4 +1,4 @@
-package com.example.clm.file;
+package com.example.cml.file;
 
 import org.junit.jupiter.api.Test;
 
@@ -9,15 +9,15 @@ class TagsAddeUtilsTest {
     @Test
     void getExtensionTag() {
         String expectedDocument = "document";
-        String actualDocument = TagsAddeUtils.getExtensionTag("my.doc");
+        String actualDocument = TagsAddUtil.getExtensionTag("my.doc");
         assertEquals("Strings should be equal", expectedDocument, actualDocument);
 
         String expectedImage = "image";
-        String actualImage = TagsAddeUtils.getExtensionTag("my.png");
+        String actualImage = TagsAddUtil.getExtensionTag("my.png");
         assertEquals("Strings should be equal", expectedImage, actualImage);
 
         String expectedAudio = "audio";
-        String actualAudio = TagsAddeUtils.getExtensionTag("my.mp3");
+        String actualAudio = TagsAddUtil.getExtensionTag("my.mp3");
         assertEquals("Strings should be equal", expectedAudio, actualAudio);
     }
 }

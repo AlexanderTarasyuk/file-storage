@@ -1,13 +1,12 @@
-package com.example.clm.file;
+package com.example.cml.file;
 
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO To get out values of fileExtMap to properties
 /**
- * The type Tags adde utils.
+ * The  Tags add utils.
  */
-public class TagsAddeUtils {
+public class TagsAddUtil {
 
     private static Map<String, String> fileExtMap;
 

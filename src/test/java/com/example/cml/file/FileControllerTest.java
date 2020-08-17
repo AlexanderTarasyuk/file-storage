@@ -1,6 +1,6 @@
-package com.example.clm.file;
+package com.example.cml.file;
 
-import com.example.clm.TestRunner;
+import com.example.cml.TestRunner;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;

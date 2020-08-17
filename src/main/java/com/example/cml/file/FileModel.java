@@ -1,15 +1,15 @@
-package com.example.clm.file;
+package com.example.cml.file;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,10 +31,11 @@ public class FileModel {
     @Field(type = FieldType.Integer)
     private int id;
     @Field(type = FieldType.Text, fielddata = true)
-    @NonNull
+    @NotNull
     private String name;
     @Field(type = FieldType.Long, fielddata = true)
     @Positive
+    @NotNull
     private long size;
     @Field(type = FieldType.Keyword)
     private List<String> tags;

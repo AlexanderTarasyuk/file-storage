@@ -1,4 +1,4 @@
-package com.example.clm.file.exceptions;
+package com.example.cml.file.exceptions;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

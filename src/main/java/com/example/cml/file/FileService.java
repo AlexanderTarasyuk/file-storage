@@ -58,7 +58,7 @@ public class FileService {
                 filter(fileModel -> !fileModel.getName().toLowerCase().contains(s.toLowerCase()))
                 .collect(Collectors.toList())).orElseGet(fileModelPage::getContent);
         PagedListHolder pagedListHolder = new PagedListHolder(fileList);
-        pagedListHolder.setPage(page.orElse(0));
+        pagedListHolder.setPage(page.orElse(page.orElse(0)));
         pagedListHolder.setPageSize(size.orElse(10));
         return new CustomPageResult(pagedListHolder);
     }

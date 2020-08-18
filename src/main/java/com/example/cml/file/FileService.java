@@ -38,14 +38,13 @@ public class FileService {
      * @param tags the tags
      * @param page the page
      * @param size the size
-     * @param q
+     * @param q criteria
      * @return the page
      */
     public CustomPageResult findAllByTags(Optional<List<String>> tags,
                                           Optional<Integer> page,
                                           Optional<Integer> size,
-                                          Optional<String> q,
-                                          Pageable pageable) {
+                                          Optional<String> q) {
 
         Page<FileModel> fileModelPage;
         PageRequest pageRequest = PageRequest.of(page.orElse(0), size.orElse(10));
@@ -70,6 +69,9 @@ public class FileService {
      * @param id the id
      */
     public void deleteFile(String id) {
+        if (fileRepository.findById(id).isEmpty()) {
+            throw new NoSuchFile(id);
+        }
         fileRepository.deleteById(id);
     }
 
@@ -96,7 +98,7 @@ public class FileService {
     @Transactional
     public void updateFile(String id, @Valid List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
-        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(Strings.join(tags, " ")));
+        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(id));
         List<String> temp = fileModel.getTags();
         if (fileModel.getTags() != null) {
             List<String> newList = Stream.concat(temp.stream(), tags.stream())

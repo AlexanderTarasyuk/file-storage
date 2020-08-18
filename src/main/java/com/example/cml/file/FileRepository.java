@@ -20,7 +20,6 @@ interface FileRepository extends ElasticsearchRepository<FileModel, String> {
      * @param pageable the pageable
      * @return the page
      */
-    @Query("{\"bool\": {\"must\": " +
-            "{\"match_all\": {}}, \"filter\": {\"term\": {\"tags\": \"?0\" }}}}")
-    Page<FileModel> findByFilteredTagQuery(String tags, Pageable pageable);
+    @Query("{\"query_string\": {\"query\": \"?0\"}}")
+    Page<FileModel> findByFilteredTagsQuery(String tags, Pageable pageable);
 }

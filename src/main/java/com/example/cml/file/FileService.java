@@ -38,7 +38,7 @@ public class FileService {
      * @param tags the tags
      * @param page the page
      * @param size the size
-     * @param q criteria
+     * @param q    criteria
      * @return the page
      */
     public CustomPageResult findAllByTags(Optional<List<String>> tags,
@@ -52,7 +52,7 @@ public class FileService {
         if (tags.isEmpty()) {
             fileModelPage = fileRepository.findAll(pageRequest);
         } else {
-            fileModelPage = fileRepository.findByFilteredTagQuery(Strings.join(tags.orElse(Collections.emptyList()), " "), pageRequest);
+            fileModelPage = fileRepository.findByFilteredTagsQuery(Strings.join(tags.get(), " AND "), pageRequest);
         }
         fileList = q.map(s -> fileModelPage.getContent().stream().
                 filter(fileModel -> !fileModel.getName().toLowerCase().contains(s.toLowerCase()))

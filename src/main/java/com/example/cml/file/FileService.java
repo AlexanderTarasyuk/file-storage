@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -81,14 +80,10 @@ public class FileService {
      * @return the int
      */
     public String createFile(FileModel fileModel) {
-        String fileName = fileModel.getName();
 
-        if (fileModel.getTags() != null) {
+        if (fileModel.getTags() != null && TagsAddUtil.getExtensionTag(fileModel.getName()) != null) {
             fileModel.getTags().add(TagsAddUtil.getExtensionTag(fileModel.getName()));
-        } else {
-            fileModel.setTags(List.of(Objects.requireNonNull(TagsAddUtil.getExtensionTag(fileModel.getName()))));
         }
-
         return fileRepository.save(fileModel).getId();
     }
 

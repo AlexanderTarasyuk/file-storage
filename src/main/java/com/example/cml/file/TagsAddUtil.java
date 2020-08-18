@@ -34,6 +34,6 @@ public class TagsAddUtil {
                 return entry.getValue();
             }
         }
-        return " ";
+        return null;
     }
 }

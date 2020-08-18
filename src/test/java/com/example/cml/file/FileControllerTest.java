@@ -48,7 +48,7 @@ class FileControllerTest {
     public void setUp() throws Exception {
         repository.deleteAll();
         mockFileModel = new FileModel();
-        mockFileModel.setId(1);
+        mockFileModel.setId("1");
         mockFileModel.setSize(1234);
         mockFileModel.setName("mockfile");
         mockFileModel.setTags(List.of("tag3"));
@@ -61,8 +61,8 @@ class FileControllerTest {
 
     @Test
     void getFileById() throws Exception {
-        FileModel fileModel = new FileModel(1, "myfile", 123);
-        Integer id = repository.save(fileModel).getId();
+        FileModel fileModel = new FileModel("1", "myfile", 123);
+        String id = repository.save(fileModel).getId();
         mockMvc.perform(get("/file/id")
                 .contentType("application/json")
                 .content(fromResource("json/create-file.json")));
@@ -71,8 +71,8 @@ class FileControllerTest {
     @Test
     void getAllFilesByTag() throws Exception {
         repository.deleteAll();
-        FileModel fileModel1 = new FileModel(1, "myfile", 123);
-        FileModel fileModel2 = new FileModel(2, "myfileNew", 321);
+        FileModel fileModel1 = new FileModel("1", "myfile", 123);
+        FileModel fileModel2 = new FileModel("2", "myfileNew", 321);
         repository.save(fileModel1);
         repository.save(fileModel2);
         mockMvc.perform(get("/file"))
@@ -89,7 +89,7 @@ class FileControllerTest {
 
     @Test
     void createFile() throws Exception {
-        FileModel fileModel = new FileModel(1, "myfile", 123);
+        FileModel fileModel = new FileModel("1", "myfile", 123);
         mockMvc.perform(post("/file")
                 .contentType("application/json")
                 .content(fromResource("json/create-file.json")))
@@ -114,7 +114,7 @@ class FileControllerTest {
     @Test
     void deleteFileTags() throws Exception {
         mockFileModel = new FileModel();
-        mockFileModel.setId(1);
+        mockFileModel.setId("1");
         mockFileModel.setSize(1234);
         mockFileModel.setName("mockfile");
         mockFileModel.setTags(List.of("tag3"));

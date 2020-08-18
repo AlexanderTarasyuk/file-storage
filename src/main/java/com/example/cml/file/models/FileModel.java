@@ -26,7 +26,7 @@ public class FileModel {
     private static AtomicInteger counter = new AtomicInteger(0);
 
     @Id
-    private int id;
+    private String id;
     @NotNull
     private String name;
     @Positive
@@ -41,7 +41,7 @@ public class FileModel {
      * @param name the name
      * @param size the size
      */
-    public FileModel(int id, String name, long size) {
+    public FileModel(String id, String name, long size) {
         this.id = id;
         this.name = name;
         this.size = size;
@@ -56,7 +56,6 @@ public class FileModel {
      */
     public FileModel(String name, long size, ArrayList<String> tags) {
         counter.getAndIncrement();
-        id = counter.get();
         this.name = name;
         this.size = size;
         this.tags = tags;

@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,7 @@ public class FileController {
      * @return the file by id
      */
     @GetMapping("/file/{id}")
-    public FileModel getFileById(@PathVariable(value = "id") Integer id) {
+    public FileModel getFileById(@PathVariable(value = "id") String id) {
         log.info("GET file by ID {}", id);
         return fileService.getFileById(id);
     }
@@ -86,7 +85,7 @@ public class FileController {
     @PostMapping("/file")
     public ResponseEntity<?> createFile(@Valid @RequestBody FileModel fileModel) {
 
-        int id = fileService.createFile(fileModel);
+        String id = fileService.createFile(fileModel);
         log.info("File is created with id {}", fileModel.getId());
 
         return ResponseEntity.ok().body("unique id :" + id);
@@ -100,7 +99,7 @@ public class FileController {
      * @return the response entity
      */
     @PatchMapping("/file/{id}")
-    public ResponseEntity<?> updateFile(@PathVariable(value = "id") Integer id,
+    public ResponseEntity<?> updateFile(@PathVariable(value = "id") String id,
                                         @RequestBody Tags tags) {
         fileService.updateFile(id, tags.getTags());
         log.info("File with id {} is updated with tags {}", id, String.join(",", tags.getTags()));
@@ -114,7 +113,7 @@ public class FileController {
      */
     @DeleteMapping("/file/{id}")
     @ResponseStatus(OK)
-    public void deleteFile(@PathVariable(value = "id") int id) {
+    public void deleteFile(@PathVariable(value = "id") String id) {
 
         log.info("File with id is deleted " + id);
 
@@ -130,8 +129,8 @@ public class FileController {
     @DeleteMapping("/file/{id}/tags")
     @ResponseStatus(OK)
     @ResponseBody
-    public void deleteFileTags(@PathVariable(value = "id") Integer id,
-                               @RequestBody ArrayList<String> tags) {
+    public void deleteFileTags(@PathVariable(value = "id") String id,
+                               @RequestBody List<String> tags) {
         log.info("File with id" + id + " tags are deleted");
 
 

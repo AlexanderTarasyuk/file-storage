@@ -8,6 +8,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The  File repository.
@@ -35,4 +36,8 @@ interface FileRepository extends ElasticsearchRepository<FileModel, Integer> {
     @Query("{\"bool\": {\"must\": " +
             "{\"match_all\": {}}, \"filter\": {\"term\": {\"tags\": \"?0\" }}}}")
     Iterable<FileModel> findByFilteredTagQuery(List<String> tags);
+
+    void deleteById(String id);
+
+    Optional<FileModel> findById(String id);
 }

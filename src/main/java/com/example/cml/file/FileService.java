@@ -10,7 +10,6 @@ import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +30,6 @@ import java.util.stream.Stream;
 public class FileService {
 
     private final FileRepository fileRepository;
-    private final ElasticsearchOperations elasticsearchOperations;
 
     /**
      * Finds all files by tags page.
@@ -64,7 +62,7 @@ public class FileService {
      *
      * @param id the id
      */
-    public void deleteFile(Integer id) {
+    public void deleteFile(String id) {
         fileRepository.deleteById(id);
     }
 
@@ -75,7 +73,7 @@ public class FileService {
      * @param fileModel the file model
      * @return the int
      */
-    public int createFile(FileModel fileModel) {
+    public String createFile(FileModel fileModel) {
         String fileName = fileModel.getName();
 
         if (fileModel.getTags() != null) {
@@ -89,12 +87,11 @@ public class FileService {
 
     /**
      * Updates file.
-     *
-     * @param id   the id
+     *  @param id   the id
      * @param tags the tags
      */
     @Transactional
-    public void updateFile(Integer id, @Valid List<String> tags) {
+    public void updateFile(String id, @Valid List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
         FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(tags));
         List<String> temp = fileModel.getTags();
@@ -110,11 +107,10 @@ public class FileService {
 
     /**
      * Deletess file tags.
-     *
-     * @param id   the id
+     *  @param id   the id
      * @param tags the tags
      */
-    public FileModel deleteFileTags(Integer id, List<String> tags) {
+    public FileModel deleteFileTags(String id, List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
         FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(tags));
         if (!fileModel.getTags().equals(tags)) {
@@ -132,7 +128,7 @@ public class FileService {
      * @param id the id
      * @return the file by id
      */
-    public FileModel getFileById(Integer id) {
+    public FileModel getFileById(String id) {
         return fileRepository.findById(id).orElseThrow(NoSuchFieldError::new);
     }
 

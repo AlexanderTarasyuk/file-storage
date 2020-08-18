@@ -7,14 +7,11 @@ import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-
 /**
  * The  File repository.
  */
 @Repository
-interface FileRepository extends ElasticsearchRepository<FileModel, Integer> {
+interface FileRepository extends ElasticsearchRepository<FileModel, String> {
 
     /**
      * Finds files by filtered tag query page.
@@ -25,10 +22,5 @@ interface FileRepository extends ElasticsearchRepository<FileModel, Integer> {
      */
     @Query("{\"bool\": {\"must\": " +
             "{\"match_all\": {}}, \"filter\": {\"term\": {\"tags\": \"?0\" }}}}")
-    Page<FileModel> findByFilteredTagQuery(List<String> tags, Pageable pageable);
-
-
-    void deleteById(String id);
-
-    Optional<FileModel> findById(String id);
+    Page<FileModel> findByFilteredTagQuery(String tags, Pageable pageable);
 }

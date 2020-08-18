@@ -1,7 +1,5 @@
 package com.example.cml.file.exceptions;
 
-import java.util.List;
-
 /**
  * The type No such file.
  */
@@ -12,7 +10,7 @@ public class NoSuchFile extends RuntimeException {
      *
      * @param tags the tags
      */
-    public NoSuchFile(List<String> tags) {
+    public NoSuchFile(String tags) {
         super("No such file with id = " + tags);
     }
 }

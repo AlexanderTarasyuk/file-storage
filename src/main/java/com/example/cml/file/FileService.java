@@ -4,6 +4,7 @@ import com.example.cml.file.exceptions.NoSuchFile;
 import com.example.cml.file.exceptions.NoSuchTags;
 import com.example.cml.file.models.CustomPageResult;
 import com.example.cml.file.models.FileModel;
+import joptsimple.internal.Strings;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.support.PagedListHolder;
@@ -41,20 +42,25 @@ public class FileService {
      * @param q
      * @return the page
      */
-    public CustomPageResult findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size, Optional<String> q) {
+    public CustomPageResult findAllByTags(Optional<List<String>> tags,
+                                          Optional<Integer> page,
+                                          Optional<Integer> size,
+                                          Optional<String> q,
+                                          Pageable pageable) {
+
         Page<FileModel> fileModelPage;
-        PageRequest pageRequest = PageRequest.of(page.orElse(1), size.orElse(10));
+        PageRequest pageRequest = PageRequest.of(page.orElse(0), size.orElse(10));
         List<FileModel> fileList;
         if (tags.isEmpty()) {
             fileModelPage = fileRepository.findAll(pageRequest);
         } else {
-            fileModelPage = fileRepository.findByFilteredTagQuery(tags.orElse(Collections.emptyList()), pageRequest);
+            fileModelPage = fileRepository.findByFilteredTagQuery(Strings.join(tags.orElse(Collections.emptyList()), " "), pageRequest);
         }
         fileList = q.map(s -> fileModelPage.getContent().stream().
                 filter(fileModel -> !fileModel.getName().toLowerCase().contains(s.toLowerCase()))
                 .collect(Collectors.toList())).orElseGet(fileModelPage::getContent);
         PagedListHolder pagedListHolder = new PagedListHolder(fileList);
-        pagedListHolder.setPage(page.orElse(1));
+        pagedListHolder.setPage(page.orElse(0));
         pagedListHolder.setPageSize(size.orElse(10));
         return new CustomPageResult(pagedListHolder);
     }
@@ -67,7 +73,6 @@ public class FileService {
     public void deleteFile(String id) {
         fileRepository.deleteById(id);
     }
-
 
     /**
      * Creates file int.
@@ -96,7 +101,7 @@ public class FileService {
     @Transactional
     public void updateFile(String id, @Valid List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
-        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(tags));
+        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(Strings.join(tags, " ")));
         List<String> temp = fileModel.getTags();
         if (fileModel.getTags() != null) {
             List<String> newList = Stream.concat(temp.stream(), tags.stream())
@@ -116,7 +121,7 @@ public class FileService {
      */
     public FileModel deleteFileTags(String id, List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
-        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(tags));
+        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(Strings.join(tags, " ")));
         if (!fileModel.getTags().equals(tags)) {
             throw new NoSuchTags(tags);
         } else {
@@ -133,7 +138,7 @@ public class FileService {
      * @return the file by id
      */
     public FileModel getFileById(String id) {
-        return fileRepository.findById(id).orElseThrow(NoSuchFieldError::new);
+        return fileRepository.findById(id).orElseThrow(() -> new NoSuchFile(id));
     }
 
     /**

@@ -51,9 +51,10 @@ public class FileController {
     public CustomPageResult getAllFilesByTag(@RequestParam(required = false) Optional<List<String>> tags,
                                              @RequestParam(required = false) Optional<Integer> page,
                                              @RequestParam(required = false) Optional<Integer> size,
-                                             @RequestParam(required = false) Optional<String> q) {
+                                             @RequestParam(required = false) Optional<String> q,
+                                             Pageable pageable) {
         log.info("GET all files by tags {} ", tags.map(strings -> String.join(",", strings)).orElseGet(() -> Collections.emptyList().toString()));
-        return fileService.findAllByTags(tags, page, size, q);
+        return fileService.findAllByTags(tags, page, size, q, pageable);
     }
 
     /**
@@ -110,14 +111,16 @@ public class FileController {
      * Deletes file by given id.
      *
      * @param id the id
+     * @return
      */
     @DeleteMapping("/file/{id}")
     @ResponseStatus(OK)
-    public void deleteFile(@PathVariable(value = "id") String id) {
+    public ResponseEntity<String> deleteFile(@PathVariable String id) {
 
         log.info("File with id is deleted " + id);
-
         fileService.deleteFile(id);
+        return ResponseEntity.ok().body("unique id :" + id);
+
     }
 
     /**

@@ -27,15 +27,6 @@ interface FileRepository extends ElasticsearchRepository<FileModel, Integer> {
             "{\"match_all\": {}}, \"filter\": {\"term\": {\"tags\": \"?0\" }}}}")
     Page<FileModel> findByFilteredTagQuery(List<String> tags, Pageable pageable);
 
-    /**
-     * Finds files by filtered tag query iterable.
-     *
-     * @param tags the tags
-     * @return the iterable
-     */
-    @Query("{\"bool\": {\"must\": " +
-            "{\"match_all\": {}}, \"filter\": {\"term\": {\"tags\": \"?0\" }}}}")
-    Iterable<FileModel> findByFilteredTagQuery(List<String> tags);
 
     void deleteById(String id);
 

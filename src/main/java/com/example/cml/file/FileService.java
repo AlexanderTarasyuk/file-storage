@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,18 +42,19 @@ public class FileService {
      * @return the page
      */
     public CustomPageResult findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size, Optional<String> q) {
-        Stream<FileModel> fileModelStream;
+        Page<FileModel> fileModelPage;
+        PageRequest pageRequest = PageRequest.of(page.orElse(1), size.orElse(10));
         List<FileModel> fileList;
         if (tags.isEmpty()) {
-            fileModelStream = (Stream<FileModel>) fileRepository.findAll();
+            fileModelPage = fileRepository.findAll(pageRequest);
         } else {
-            fileModelStream = (Stream<FileModel>) fileRepository.findByFilteredTagQuery(tags.orElse(Collections.emptyList()));
+            fileModelPage = fileRepository.findByFilteredTagQuery(tags.orElse(Collections.emptyList()), pageRequest);
         }
-        fileList = q.map(s -> fileModelStream.
+        fileList = q.map(s -> fileModelPage.getContent().stream().
                 filter(fileModel -> !fileModel.getName().toLowerCase().contains(s.toLowerCase()))
-                .collect(Collectors.toList())).orElseGet(() -> fileModelStream.collect(Collectors.toList()));
+                .collect(Collectors.toList())).orElseGet(fileModelPage::getContent);
         PagedListHolder pagedListHolder = new PagedListHolder(fileList);
-        pagedListHolder.setPage(page.orElse(0));
+        pagedListHolder.setPage(page.orElse(1));
         pagedListHolder.setPageSize(size.orElse(10));
         return new CustomPageResult(pagedListHolder);
     }
@@ -87,7 +89,8 @@ public class FileService {
 
     /**
      * Updates file.
-     *  @param id   the id
+     *
+     * @param id   the id
      * @param tags the tags
      */
     @Transactional
@@ -107,7 +110,8 @@ public class FileService {
 
     /**
      * Deletess file tags.
-     *  @param id   the id
+     *
+     * @param id   the id
      * @param tags the tags
      */
     public FileModel deleteFileTags(String id, List<String> tags) {
@@ -135,7 +139,7 @@ public class FileService {
     /**
      * Gets all files by criteria.
      *
-     * @param q        the criteria of search
+     * @param q the criteria of search
      * @return the all files by criteria
      */
     public Page<FileModel> getAllFilesByCriteria(Optional<String> q) {

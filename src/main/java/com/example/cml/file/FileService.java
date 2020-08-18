@@ -118,11 +118,11 @@ public class FileService {
      */
     public FileModel deleteFileTags(String id, List<String> tags) {
         Optional<FileModel> possibleFileModel = fileRepository.findById(id);
-        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(Strings.join(tags, " ")));
-        if (!fileModel.getTags().equals(tags)) {
+        FileModel fileModel = possibleFileModel.orElseThrow(() -> new NoSuchFile(id));
+        if (!fileModel.getTags().containsAll(tags)) {
             throw new NoSuchTags(tags);
         } else {
-            fileModel.setTags(Collections.EMPTY_LIST);
+            fileModel.setTags(Collections.emptyList());
         }
         fileRepository.save(fileModel);
         return fileModel;

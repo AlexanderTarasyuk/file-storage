@@ -67,7 +67,6 @@ public class FileController {
             @RequestParam(required = false) Optional<String> q,
             Pageable pageable) {
         log.info("GET file by ID {}", q.orElse("No criteria"));
-
         if (q.isPresent()) {
             return fileService.getAllFilesByCriteria(q);
         } else {
@@ -84,10 +83,8 @@ public class FileController {
      */
     @PostMapping("/file")
     public ResponseEntity<?> createFile(@Valid @RequestBody FileModel fileModel) {
-
         String id = fileService.createFile(fileModel);
         log.info("File is created with id {}", fileModel.getId());
-
         return ResponseEntity.ok().body("unique id :" + id);
     }
 
@@ -119,7 +116,6 @@ public class FileController {
         log.info("File with id is deleted " + id);
         fileService.deleteFile(id);
         return ResponseEntity.ok().body("unique id :" + id);
-
     }
 
     /**
@@ -132,10 +128,8 @@ public class FileController {
     @ResponseStatus(OK)
     @ResponseBody
     public void deleteFileTags(@PathVariable(value = "id") String id,
-                               @RequestBody List<String> tags) {
+                               @RequestBody Tags tags) {
         log.info("File with id" + id + " tags are deleted");
-
-
-        fileService.deleteFileTags(id, tags);
+        fileService.deleteFileTags(id, tags.getTags());
     }
 }

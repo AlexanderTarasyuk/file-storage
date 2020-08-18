@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(indexName = "file_storage")
+@Document(indexName = "id")
 @Validated
 public class FileModel {
 

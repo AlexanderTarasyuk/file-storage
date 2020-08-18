@@ -51,16 +51,16 @@ public class FileController {
     @GetMapping("/file")
     public CustomPageResult getAllFilesByTag(@RequestParam(required = false) Optional<List<String>> tags,
                                              @RequestParam(required = false) Optional<Integer> page,
-                                             @RequestParam(required = false) Optional<Integer> size) {
+                                             @RequestParam(required = false) Optional<Integer> size,
+                                             @RequestParam(required = false) Optional<String> q) {
         log.info("GET all files by tags {} ", tags.map(strings -> String.join(",", strings)).orElseGet(() -> Collections.emptyList().toString()));
-        return fileService.findAllByTags(tags, page, size);
+        return fileService.findAllByTags(tags, page, size, q);
     }
 
     /**
      * Gets all files by criteria.
      *
      * @param q        criteria
-     * @param pageable the pageable
      * @return the all files as a page by criteria
      */
     @GetMapping("/file/criteria")
@@ -70,7 +70,7 @@ public class FileController {
         log.info("GET file by ID {}", q.orElse("No criteria"));
 
         if (q.isPresent()) {
-            return fileService.getAllFilesByCriteria(q, pageable);
+            return fileService.getAllFilesByCriteria(q);
         } else {
             return fileService.getAllFiles(pageable);
         }

@@ -6,19 +6,19 @@ import com.example.cml.file.models.CustomPageResult;
 import com.example.cml.file.models.FileModel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.Valid;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,19 +39,24 @@ public class FileService {
      * @param tags the tags
      * @param page the page
      * @param size the size
+     * @param q
      * @return the page
      */
-    public CustomPageResult findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size) {
-
-        Pageable paramPageable = PageRequest.of(page.orElse(0), size.orElse(10));
-        Page<FileModel> fileModelPage;
+    public CustomPageResult findAllByTags(Optional<List<String>> tags, Optional<Integer> page, Optional<Integer> size, Optional<String> q) {
+        Stream<FileModel> fileModelStream;
+        List<FileModel> fileList;
         if (tags.isEmpty()) {
-            fileModelPage = fileRepository.findAll(paramPageable);
-
+            fileModelStream = (Stream<FileModel>) fileRepository.findAll();
         } else {
-            fileModelPage = fileRepository.findByFilteredTagQuery(tags.orElse(Collections.emptyList()), paramPageable);
+            fileModelStream = (Stream<FileModel>) fileRepository.findByFilteredTagQuery(tags.orElse(Collections.emptyList()));
         }
-        return new CustomPageResult(fileModelPage.getTotalElements(), fileModelPage.getTotalPages(), fileModelPage.getContent());
+        fileList = q.map(s -> fileModelStream.
+                filter(fileModel -> !fileModel.getName().toLowerCase().contains(s.toLowerCase()))
+                .collect(Collectors.toList())).orElseGet(() -> fileModelStream.collect(Collectors.toList()));
+        PagedListHolder pagedListHolder = new PagedListHolder(fileList);
+        pagedListHolder.setPage(page.orElse(0));
+        pagedListHolder.setPageSize(size.orElse(10));
+        return new CustomPageResult(pagedListHolder);
     }
 
     /**
@@ -132,29 +137,12 @@ public class FileService {
     }
 
     /**
-     * Find all files list.
-     *
-     * @return the list
-     */
-    public List<String> findAllFiles() {
-        Query query = Query.findAll();
-        SearchHits<FileModel> search = elasticsearchOperations.search(query, FileModel.class);
-        List<String> listOfNameCard = new LinkedList<>();
-
-        for (SearchHit<FileModel> sr : search) {
-            listOfNameCard.add(sr.getContent().toString());
-        }
-        return listOfNameCard;
-    }
-
-    /**
      * Gets all files by criteria.
      *
-     * @param q        the q
-     * @param pageable the pageable
+     * @param q        the criteria of search
      * @return the all files by criteria
      */
-    public Page<FileModel> getAllFilesByCriteria(Optional<String> q, Pageable pageable) {
+    public Page<FileModel> getAllFilesByCriteria(Optional<String> q) {
         Stream<FileModel> fileModelStream = (Stream<FileModel>) fileRepository.findAll();
         List<FileModel> fileList = fileModelStream.
                 filter(fileModel -> !fileModel.getName().toLowerCase().contains(q.get().toLowerCase()))

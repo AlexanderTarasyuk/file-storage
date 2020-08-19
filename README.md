@@ -4,7 +4,7 @@
 
 * [Project structure](#structure)
 
-* [TASK](#developer-start)
+
 
 File Storage REST service
 
@@ -24,4 +24,4 @@ File Storage REST service
     docker run -d --name es762 -p 9200:9200 -e "discovery.type=single-node" elasticsearch:7.6.2
     <br>
     <br>
-    application is using port 8083 - it should not be blocked.
+    application is using port 8082 - it should not be blocked.

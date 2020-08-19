@@ -12,6 +12,9 @@ File Storage REST service
 * Java 11
 * Maven 3.6.0
 * Spring Boot
+* Lombok
+* Spring MVC
+* Spring Test
 * Elastic Search
 <hr>
 

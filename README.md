@@ -20,7 +20,7 @@ File Storage REST service
 
 # <a name="developer-start"></a>Start application
 
-0. Elasticsearch should be installed and started locally on port 9200;
+ Elasticsearch should be installed and started locally on port 9200;
     as alternative, docker image can be used: 
     <br>
     <br>
